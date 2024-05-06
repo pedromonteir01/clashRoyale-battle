@@ -4,6 +4,8 @@ const { Pool } = require('pg');
 const app = express();
 app.use(express.json());
 
+const port = 4000;
+
 const pool = new Pool({
     user: 'postgres',
     host: 'localhost',
@@ -24,3 +26,5 @@ app.get('/cards', async (req, res) => {
         res.status(500).send({ mensagem: 'Erro ao obter todas as cartas' });
     }
 });
+
+app.listen(port, () => console.log(`Server starred in http://localhost:${port}`));

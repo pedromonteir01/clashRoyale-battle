@@ -6,9 +6,19 @@ Uma api idealizada com base nas cartas do jogo [Clash Royale](https://supercell.
 - [X] ECMAscript
 - [X] Node.JS (v18.17.1)
 - [X] PostgreSQL (v16)
+- [X] Git (v2.44.0)
 
 ### - Bibliotecas utilizadas
--[X] Express
--[X] Nodemon
--[X] PG
+- [X] Express
+- [X] Nodemon
+- [X] PG
+
+## Configuração
+É preciso também ter instalado o [Node.JS](https://nodejs.org/en/download), o [PostgreSQL](https://www.postgresql.org/download/) e por último, o [Git](https://git-scm.com/download/) para conseguir clonar o repositório anexado no GitHub.
+
+para clonar, executar `git clone https://github.com/pedromonteir01/clashRoyale-battle.git`
+
+Ao clonar o projeto, o comando ` npm i `deve ser digitado para instalar as dependências necessárias.
+> Exemplo: pasta node_modules
+
 

@@ -13,6 +13,7 @@ Uma api idealizada com base nas cartas do jogo [Clash Royale](https://supercell.
 - [X] Nodemon
 - [X] PG
 
+
 ## Configuração
 É preciso também ter instalado o [Node.JS](https://nodejs.org/en/download), o [PostgreSQL](https://www.postgresql.org/download/) e por último, o [Git](https://git-scm.com/download/) para conseguir clonar o repositório anexado no GitHub.
 
@@ -21,4 +22,14 @@ para clonar, executar `git clone https://github.com/pedromonteir01/clashRoyale-b
 Ao clonar o projeto, o comando ` npm i `deve ser digitado para instalar as dependências necessárias.
 > Exemplo: pasta node_modules
 
+Caso seu `psql ou pgAdmin4` tenha outras configurações (como porta e usuário), alterar ba variável pool dentro do arquivo `index.js`
 
+>Base geral da configuração do pool:
+```
+Pool
+├── User(postgres)
+├── Host(localhost)
+├── Port(5432)
+├── Password(1234)
+└── Database(* nome de sua escolha *)
+```

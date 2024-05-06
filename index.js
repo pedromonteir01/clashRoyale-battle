@@ -11,3 +11,16 @@ const pool = new Pool({
     password: 'ds564',
     database: 'clashroyaledb'
 });
+
+app.get('/cards', async (req, res) => {
+    try {
+        const allCards = await pool.query('SELECT * FROM cards;');
+        return allCards ? res.status(200).json({
+            total: allCards.rowCount,
+            cards: allCards.rows
+        }) : res.status(400).json({ message: 'Não há cartas cadastradas'});
+    } catch(e) {
+        console.error('Erro ao obter todas as cartas', e);
+        res.status(500).send({ mensagem: 'Erro ao obter todas as cartas' });
+    }
+});

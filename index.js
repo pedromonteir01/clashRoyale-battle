@@ -17,10 +17,10 @@ const pool = new Pool({
 app.get('/cards', async (req, res) => {
     try {
         const allCards = await pool.query('SELECT * FROM cards;');
-        return allCards ? res.status(200).json({
+        return allCards > 0 ? res.status(200).json({
             total: allCards.rowCount,
             cards: allCards.rows
-        }) : res.status(400).json({ message: 'Não há cartas cadastradas'});
+        }) : res.status(200).json({ message: 'Não há cartas cadastradas'});
     } catch(e) {
         console.error('Erro ao obter todas as cartas', e);
         res.status(500).send({ mensagem: 'Erro ao obter todas as cartas' });

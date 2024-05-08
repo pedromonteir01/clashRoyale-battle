@@ -51,22 +51,30 @@ app.post('/cards', async(req, res) => {
 
         if(name < 3) {
             return res.status(400).send({ message: 'invalid_name' });
+
         } else if(level < 1 || level > 15) {
             return res.status(400).send({ message: 'invalid_level' });
+
         } else if(!rarityCards.includes(rarity)) {
             return res.status(400).send({ message: 'invalid_rarity' });
+
         } else if(!types.includes(type)) {
             return res.status(400).send({ message: 'invalid_type' });
+
         } else if(typeof level !== 'number' || typeof life !== 'number' || typeof damage !== 'number') {
             return res.status(400).send({ message: 'invalid_type_number' });
+
         } else {
             await pool.query('INSERT INTO cards(name, level, rarity, type, life, damage) VALUES ($1, $2, $3, $4, $5, $5);',
             [name, level, rarity, type, life, damage]);
+            return res.status(201).send({ message: `card ${name} registered` });
         }
     } catch(e) {
         console.error('Erro ao postar a carta', e);
         res.status(500).send({ mensagem: 'Erro ao postar a carta' });   
     }
-})
+});
+
+
 
 app.listen(port, () => console.log(`Server starred in http://localhost:${port}`));

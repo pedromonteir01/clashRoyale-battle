@@ -49,11 +49,23 @@ app.get('/cards/:id', async(req, res) => {
     try {
         const { id } = req.params;
         const card = await pool.query('SELECT * FROM cards WHERE id=$1;', [id]);
-        return card ?
+        return card.rowCount > 0 ?
         res.status(200).send(card.rows[0]) : res.status(404).send({ message: 'Não há carta com este id' });
     } catch(e) {
         console.error('Erro ao obter a carta', e);
         res.status(500).send({ mensagem: 'Erro ao obter a carta' }); 
+    }
+});
+
+app.get('/cards/name/:name', async(req, res) => {
+    try {
+        const { name } = req.params;
+        const card = await pool.query('SELECT * FROM cards WHERE name LIKE $1', [`${name}%`]);
+        return card.rowCount > 0 ?
+        res.status(200).send(card.rows) : res.status(404).send({ message: 'Não foi encontrada carta com esse nome' }); 
+    } catch(e) {
+        console.error('Erro ao obter a carta pelo nome', e);
+        res.status(500).send({ mensagem: 'Erro ao obter carta pelo nome' }); 
     }
 });
 
@@ -169,6 +181,7 @@ app.get('/battle/:id1/:id2', async(req, res) => {
         return res.status(500).send({ message: 'Erro ao batalhar as cartas'});
     }
 });
+
 
 
 app.listen(port, () => console.log(`Server starred in http://localhost:${port}`));

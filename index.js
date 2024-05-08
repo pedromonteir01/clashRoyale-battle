@@ -14,6 +14,22 @@ const pool = new Pool({
     database: 'clashroyaledb'
 });
 
+const battle = (life1, life2, damage1, damage2, id1, id2) => {
+    while(life1 > 0 && life2 > 0) {
+        life1 -= damage2;
+        life2 -= damage1;
+    }
+
+    if(life1 > life2) {
+        return id1
+    } else if(life2 > life1) {
+        return id2;
+    } else {
+        return null;
+    }
+    
+}
+
 app.get('/cards', async (req, res) => {
     try {
         const allCards = await pool.query('SELECT * FROM cards;');
@@ -116,7 +132,32 @@ app.delete('/cards/:id', async(req, res) => {
         console.error('Erro ao excluir a carta', e);
         res.status(500).send({ mensagem: 'Erro ao excluir a carta' });   
     }
-})
+});
+
+app.get('/battle/:id1/:id2', async(req, res) => {
+    try {
+        const { id1, id2 } = req.params;
+        const cards = await pool.query('SELECT * FROM cards WHERE id=$1 OR id=$2;', [id1, id2]);
+
+        const cardLife1 = cards.rows[0].life;
+        const cardLife2 = cards.rows[1].life;
+    
+        const cardDamage1 = cards.rows[0].damage;
+        const cardDamage2 = cards.rows[1].damage;
+
+        const winnerid = battle(cardLife1, cardLife2, cardDamage1, cardDamage2, id1, id2);
+
+        await pool.query('INSERT INTO battles(winnerid, loserid) VALUES ($1, $2)',
+        [winnerid, winnerid == id1 ? id2 : id1]);
+
+        const winner = await pool.query('SELECT * FROM cards WHERE id=$1', [winnerid]);
+
+        return winnerid == null ? res.status(200).send({ message: 'empate' }) : res.status(200).send({ message: `vencedor é ${winner.rows}` }); 
+    } catch(e) {
+        console.error('Erro ao batalhar', e);
+        return res.status(500).send({ message: 'Erro ao batalhar as cartas'});
+    }
+});
 
 
 app.listen(port, () => console.log(`Server starred in http://localhost:${port}`));

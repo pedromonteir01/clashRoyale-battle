@@ -134,6 +134,17 @@ app.delete('/cards/:id', async(req, res) => {
     }
 });
 
+app.get('/battle', async(req, res) => {
+    try {
+        const allBattles = await pool.query('SELECT * FROM battles;');
+        return allBattles.rowCount > 0 ? res.status(200).json({ total: allBattles.rowCount, battles: allBattles.rows  }) :
+        res.status(200).send({ message: 'nenhuma batalha realizada' });
+    } catch(e) {
+        console.error('Erro ao obter batalhas', e);
+        return res.status(500).send({ message: 'Erro ao obter todas as batalhas'});
+    }
+});
+
 app.get('/battle/:id1/:id2', async(req, res) => {
     try {
         const { id1, id2 } = req.params;
@@ -152,7 +163,7 @@ app.get('/battle/:id1/:id2', async(req, res) => {
 
         const winner = await pool.query('SELECT * FROM cards WHERE id=$1', [winnerid]);
 
-        return winnerid == null ? res.status(200).send({ message: 'empate' }) : res.status(200).send({ message: `vencedor é ${winner.rows}` }); 
+        return winnerid == null ? res.status(200).send({ message: 'empate' }) : res.status(200).send({ message: `vencedor é ${winner.rows[0].name}` }); 
     } catch(e) {
         console.error('Erro ao batalhar', e);
         return res.status(500).send({ message: 'Erro ao batalhar as cartas'});

@@ -170,8 +170,8 @@ app.get('/battle/:id1/:id2', async(req, res) => {
 
         const winnerid = battle(cardLife1, cardLife2, cardDamage1, cardDamage2, id1, id2);
 
-        await pool.query('INSERT INTO battles(winnerid, loserid) VALUES ($1, $2)',
-        [winnerid, winnerid == id1 ? id2 : id1]);
+        await pool.query('INSERT INTO battles(winnerid, loserid, cardoneid, cardtwoid, namecardone, namecardtwo) VALUES ($1, $2, $3, $4, $5, $6)',
+        [winnerid, winnerid == id1 ? id2 : id1, id1, id2, cards.rows[0].name, cards.rows[1].name]);
 
         const winner = await pool.query('SELECT * FROM cards WHERE id=$1', [winnerid]);
 

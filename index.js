@@ -182,6 +182,19 @@ app.get('/battle/:id1/:id2', async(req, res) => {
     }
 });
 
+app.get('/battlesbyname/:name', async(req, res) => {
+    try {
+        const { name } = req.params;
+
+        const battles = await pool.query('SELECT * FROM battles WHERE namecardone LIKE $1 OR namecardtwo LIKE $1', [`${name}%`]);
+
+        return battles.rowCount > 0 ? res.status(200).json({ total: battles.rowCount, battles: battles.rows }) : res.status(404).send({ message: 'Esta carta ainda não batalhou' }); 
+    } catch(e) {
+        console.error('Erro ao obter batalhas', e);
+        return res.status(500).send({ message: 'Erro ao obter batalhas'});
+    }
+});
+
 
 
 app.listen(port, () => console.log(`Server starred in http://localhost:${port}`));

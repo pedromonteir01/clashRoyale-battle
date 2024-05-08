@@ -17,7 +17,7 @@ const pool = new Pool({
 app.get('/cards', async (req, res) => {
     try {
         const allCards = await pool.query('SELECT * FROM cards;');
-        return allCards > 0 ? 
+        return allCards.rowCount > 0 ? 
         res.status(200).json({
             total: allCards.rowCount,
             cards: allCards.rows
@@ -34,7 +34,7 @@ app.get('/cards/:id', async(req, res) => {
         const { id } = req.params;
         const card = await pool.query('SELECT * FROM cards WHERE id=$1;', [id]);
         return card ?
-        res.status(200).send(card) : res.status(404).send({ message: 'Não há carta com este id' });
+        res.status(200).send(card.rows[0]) : res.status(404).send({ message: 'Não há carta com este id' });
     } catch(e) {
         console.error('Erro ao obter a carta', e);
         res.status(500).send({ mensagem: 'Erro ao obter a carta' }); 
@@ -42,7 +42,7 @@ app.get('/cards/:id', async(req, res) => {
 });
 
 //variables for includes
-const types = ['construction', 'troop', 'air', 'spell'];
+const types = ['construction', 'troop', 'spell'];
 const rarityCards = ['commum', 'rare', 'epic', 'legendary', 'champion'];
 
 app.post('/cards', async(req, res) => {
@@ -65,7 +65,7 @@ app.post('/cards', async(req, res) => {
             return res.status(400).send({ message: 'invalid_type_number' });
 
         } else {
-            await pool.query('INSERT INTO cards(name, level, rarity, type, life, damage) VALUES ($1, $2, $3, $4, $5, $5);',
+            await pool.query('INSERT INTO cards(name, level, rarity, type, life, damage) VALUES ($1, $2, $3, $4, $5, $6);',
             [name, level, rarity, type, life, damage]);
             return res.status(201).send({ message: `card ${name} registered` });
         }

@@ -55,10 +55,10 @@ app.post('/cards', async(req, res) => {
         } else if(level < 1 || level > 15) {
             return res.status(400).send({ message: 'invalid_level' });
 
-        } else if(!rarityCards.includes(rarity)) {
+        } else if(!rarityCards.includes(rarity.toLowerCase())) {
             return res.status(400).send({ message: 'invalid_rarity' });
 
-        } else if(!types.includes(type)) {
+        } else if(!types.includes(type.toLowerCase())) {
             return res.status(400).send({ message: 'invalid_type' });
 
         } else if(typeof level !== 'number' || typeof life !== 'number' || typeof damage !== 'number') {
@@ -75,6 +75,36 @@ app.post('/cards', async(req, res) => {
     }
 });
 
+app.put('/cards/:id', async(req, res) => {
+    try {
+        const { name, level, rarity, type, life, damage } = req.body;
+        const { id } = req.params;
+        
+        if(name < 3) {
+            return res.status(400).send({ message: 'invalid_name' });
+
+        } else if(level < 1 || level > 15) {
+            return res.status(400).send({ message: 'invalid_level' });
+
+        } else if(!rarityCards.includes(rarity.toLowerCase())) {
+            return res.status(400).send({ message: 'invalid_rarity' });
+
+        } else if(!types.includes(type.toLowerCase())) {
+            return res.status(400).send({ message: 'invalid_type' });
+
+        } else if(typeof level !== 'number' || typeof life !== 'number' || typeof damage !== 'number') {
+            return res.status(400).send({ message: 'invalid_type_number' });
+
+        } else {
+            await pool.query('UPDATE cards SET name=$1, level=$2, rarity=$3, type=$4, life=$5, damage=$6 WHERE id=$7;',
+            [name, level, rarity, type, life, damage, id]);
+            return res.status(200).send({ message: `card ${name} updated` });
+        }
+    } catch(e) {
+        console.error('Erro ao editar a carta', e);
+        res.status(500).send({ mensagem: 'Erro ao editar a carta' });   
+    }
+});
 
 
 app.listen(port, () => console.log(`Server starred in http://localhost:${port}`));

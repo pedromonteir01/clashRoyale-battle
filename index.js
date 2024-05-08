@@ -98,13 +98,25 @@ app.put('/cards/:id', async(req, res) => {
         } else {
             await pool.query('UPDATE cards SET name=$1, level=$2, rarity=$3, type=$4, life=$5, damage=$6 WHERE id=$7;',
             [name, level, rarity, type, life, damage, id]);
-            return res.status(200).send({ message: `card ${name} updated` });
+            return res.status(200).send({ message: `card ${name}, with id:${id} updated` });
         }
     } catch(e) {
         console.error('Erro ao editar a carta', e);
         res.status(500).send({ mensagem: 'Erro ao editar a carta' });   
     }
 });
+
+app.delete('/cards/:id', async(req, res) => {
+    try {
+        const { id } = req.params;
+
+        await pool.query('DELETE FROM cards WHERE id=$1', [id]);
+        return res.status(200).send({ message: `card with id: ${id} deleted` });
+    } catch(e) {
+        console.error('Erro ao excluir a carta', e);
+        res.status(500).send({ mensagem: 'Erro ao excluir a carta' });   
+    }
+})
 
 
 app.listen(port, () => console.log(`Server starred in http://localhost:${port}`));
